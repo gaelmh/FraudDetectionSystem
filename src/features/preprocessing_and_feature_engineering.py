@@ -71,11 +71,19 @@ def feature_engineering(df: pd.DataFrame):
     df_fe['expected_newbalanceDest'] = np.nan
 
     # When money enters the account:
-    df_fe.loc[(df_fe['type'].isin(['TRANSFER', 'CASH_IN'])) & (~df_fe['nameDest'].str.startswith('M')), 'expected_newbalanceDest'] = \
+    df_fe.loc[(df_fe['type'].isin(['TRANSFER', 'CASH_IN', 'PAYMENT', 'DEBIT'])) & (~df_fe['nameDest'].str.startswith('M')), 'expected_newbalanceDest'] = \
         df_fe['oldbalanceDest'] + df_fe['amount']
+
+    # When money leaves the account:
+    df_fe.loc[(df_fe['type'].isin(['CASH_OUT'])) & (~df_fe['nameDest'].str.startswith('M')), 'expected_newbalanceDest'] = \
+        df_fe['oldbalanceDest'] - df_fe['amount']
 
     # Calculate the difference between actual and expected newbalanceDest
     df_fe['balance_diff_dest'] = df_fe['newbalanceDest'] - df_fe['expected_newbalanceDest']
+
+    # Handle NaNs
+    df_fe['is_balance_diff_dest_missing'] = df_fe['balance_diff_dest'].isna().astype(int)
+    df_fe['balance_diff_dest'] = df_fe['balance_diff_dest'].fillna(0)
 
     # --- 4. Create Binary Flag for Origin Account Emptied ---
     df_fe['emptied_orig_account'] = ((df_fe['type'].isin(['TRANSFER', 'CASH_IN'])) &
@@ -99,13 +107,13 @@ def feature_engineering(df: pd.DataFrame):
     df_fe = df_fe.drop(['type', 'step', 'nameOrig', 'nameDest',
                         'expected_newbalanceOrig', 'expected_newbalanceDest'], axis=1)
 
-    print("Features engineered successfully.")
+    print("Features engineered successfully!")
     return df_fe
 
 # Write preprocessed file
 def write_data(df: pd.DataFrame):
     df.to_parquet(FULL_OUTPUT_PATH, engine='pyarrow')
-    print(f"Successfully wrote file to {FULL_OUTPUT_PATH}")
+    print(f"Wrote file to {FULL_OUTPUT_PATH}.")
 
 if __name__ == "__main__":
     # Load data
