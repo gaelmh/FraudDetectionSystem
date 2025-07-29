@@ -1,3 +1,5 @@
+#These paths or files will be ignored
+
 # PyCharm and IntelliJ IDEA files
 .idea/
 *.iml
