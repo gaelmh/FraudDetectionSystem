@@ -1,0 +1,46 @@
+# PyCharm and IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.swp
+*~
+
+# Virtual environment
+.venv/
+
+# Data directories
+data/
+
+# Saved models
+saved_models/
+
+# Project declaration file
+Case Study Fraud Detection System.DOCX
+
+# Jupyter Notebook specific
+.ipynb_checkpoints/
+*.ipynb_checkpoints # For older versions
+
+# IDE specific for Jupyter/Python console history
+.python_history
+.ipython_history
+
+# Logs
+*.log
+logs/
+
+# Windows specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Environment variables files
+.env
